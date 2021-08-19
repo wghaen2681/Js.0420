@@ -1,0 +1,231 @@
+body {
+  background: black;
+
+  /* 以隱藏多出部分來達成全螢幕的奇怪方式 */
+  overflow: hidden;
+}
+
+#frame1 {
+  width: 100vw;
+  height: 100vh;
+}
+
+#init-bg {
+  width: 100vw;
+  height: 100vh;
+
+  /* 使用 background-image 比使用 background 更為明確，
+    這樣可以避免之後在 javascript 的地方更改到其他項目，
+    ex. background-size / background-position */
+  background-image: url(./img/pre_game_img/1.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+#btn-start {
+  width: 98px;
+  height: 40px;
+  background: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-33.5%, -50%);
+  text-align: center;
+  line-height: 40px;
+  opacity: 0.6;
+  font-size: 16px;
+}
+
+#btn-start:hover {
+  width: 107px;
+  height: 49px;
+  line-height: 49px;
+  font-size: 19px;
+  cursor: pointer;
+  opacity: 0.6;
+  background: red;
+  color: white;
+}
+
+.animation {
+  animation-name: animation;
+  animation-duration: 2s;
+  /* 
+    ease: 預設值 
+    linear: 維持等速 
+    ease-in: 由慢變快 
+    ease-out; 由快變慢 
+    ease-in-out: 由慢變快，再由快變慢
+     */
+  animation-timing-function: linear;
+  /* 
+    alternate 交替播放，0 ~ 100% => 100% ~ 0% 
+    alternate-reverse 交替播放，100% ~ 0% => 0% ~ 100% 
+    reverse 反向播放 100% ~ 0%，100% ~ 0% ... 
+    */
+  animation-direction: normal;
+  /* 
+    撥放後的狀態
+    forwards (保留動畫結束後的樣式)
+    backwords (返回動畫一開始的樣式)
+     */
+  animation-fill-mode: forwards;
+}
+
+/* 建立動畫 Animation */
+/* 步驟一，必須要建一組關鍵影格(keyframes) */
+/* 起始 from(0%)、結束 to(100%) */
+@keyframes animation {
+  from {
+    transform: scale(1);
+    /* 不能使用背景的大小作為關鍵影格，要使用 transform 調整整個 div 的大小，或許是因為 animation 比較會抓 div */
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+#candle {
+  height: 27%;
+  position: absolute;
+  left: 85vw;
+  top: 73vh;
+  transform: translate(-50%, -50%);
+  z-index: 90;
+}
+
+.frame2_animation {
+  animation-name: candle_animation;
+  animation-duration: 600ms;
+  animation-timing-function: linear;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
+
+@keyframes candle_animation {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+#frame2 {
+  width: 62vw;
+  height: 100vh;
+  position: absolute;
+  left: 48%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.card {
+  width: 17%;
+  height: 33%;
+  position: relative;
+
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+  float: left;
+  margin: 10px;
+}
+
+.card-back {
+  width: 100%;
+  height: 100%;
+  background-image: url(./img/mid_game_img/back.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+}
+
+.card-front {
+  width: 100%;
+  height: 100%;
+  background-image: url(./img/mid_game_img/front.png);
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: 73%;
+  position: absolute;
+  left: 2%;
+  top: 0%;
+  opacity: 0;
+}
+
+.card-open {
+  opacity: 1;
+}
+
+#frame_end {
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center 10%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 100;
+}
+
+.door {
+  background-image: url(./img/mid_game_img/door.jpg);
+}
+
+.clown {
+  background-image: url(./img/mid_game_img/clown.jpeg);
+}
+
+.scream {
+  background-image: url(./img/mid_game_img/scream.jpg);
+}
+
+.clown_dance {
+  background-image: url(./img/aft_game_img/clown_dance.jpg);
+}
+
+.animation_end {
+  animation-name: animation_end;
+  animation-duration: 2s;
+  /* 
+      ease: 預設值 
+      linear: 維持等速 
+      ease-in: 由慢變快 
+      ease-out; 由快變慢 
+      ease-in-out: 由.慢變快，再由快變慢
+      */
+  animation-timing-function: linear;
+  /* 
+      alternate 交替播放，0 ~ 100% => 100% ~ 0% 
+      alternate-reverse 交替播放，100% ~ 0% => 0% ~ 100% 
+      reverse 反向播放 100% ~ 0%，100% ~ 0% ... 
+      */
+  animation-direction: normal;
+  /* 
+      撥放後的狀態
+      forwards (保留動畫結束後的樣式)
+      backwords (返回動畫一開始的樣式)
+      */
+  animation-fill-mode: forwards;
+}
+
+/* 建立動畫 Animation */
+/* 步驟一，必須要建一組關鍵影格(keyframes) */
+/* 起始 from(0%)、結束 to(100%) */
+@keyframes animation_end {
+  from {
+    /* 不能使用背景的大小作為關鍵影格，要使用 transform 調整整個 div 的大小，或許是因為 animation 比較會抓 div */
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

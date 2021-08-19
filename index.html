@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css">
+    <style>
+        .animation_end {
+            animation-name: animation_end;
+            animation-duration: 2s;
+            /* 
+                ease: 預設值 
+                linear: 維持等速 
+                ease-in: 由慢變快 
+                ease-out; 由快變慢 
+                ease-in-out: 由.慢變快，再由快變慢
+                */
+            animation-timing-function: linear;
+            /* 
+                alternate 交替播放，0 ~ 100% => 100% ~ 0% 
+                alternate-reverse 交替播放，100% ~ 0% => 0% ~ 100% 
+                reverse 反向播放 100% ~ 0%，100% ~ 0% ... 
+                */
+            animation-direction: normal;
+            /* 
+                撥放後的狀態
+                forwards (保留動畫結束後的樣式)
+                backwords (返回動畫一開始的樣式)
+                */
+            animation-fill-mode: forwards;
+        }
+
+        /* 建立動畫 Animation */
+        /* 步驟一，必須要建一組關鍵影格(keyframes) */
+        /* 起始 from(0%)、結束 to(100%) */
+        @keyframes animation_end {
+            from {
+                /* 不能使用背景的大小作為關鍵影格，要使用 transform 調整整個 div 的大小，或許是因為 animation 比較會抓 div */
+                opacity: 0;
+            }
+            
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id=game style="position: relative;">
+        <div id="frame1">
+            <div id="init-bg">
+                <div id="btn-start">開始遊戲</div>
+            </div>
+        </div>
+        <audio controls loop hidden id="audio1">
+            <source src="IT.mp3"> 
+        </audio>
+    </div>
+
+    <script src="./jquery-3.6.0.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js' integrity='sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==' crossorigin='anonymous'></script>
+    <script></script>
+    <script>
+        $('#btn-start').click(() => {
+            $('#init-bg').addClass('animation')
+
+            $('#btn-start').hide()
+            $('#btn-start').css({
+                'user-select': 'none',
+                '-webkit-user-drag': 'none',
+                'pointer-events': 'none'
+            })
+
+            // 加上 frame2 
+            $('#game').append(`
+            <div id="frame2"></div>
+            `)
+
+            // 設定隨機指定卡片是贏家 
+            let rand = Math.round(Math.random()*15)
+            let winX = rand % 5
+            let winY = Math.floor(rand / 5)
+            console.log('贏家卡片位在', '第', rand, ',x:', winX, ',y:', winY) 
+
+            // 產生 15 張卡片（於開始動畫播放完畢後顯示） 
+            setTimeout(function(){
+                // 產生 15 張卡片（於開始動畫播放完畢後顯示） 
+                for (let i = 0; i < 15; i++) {
+                    $('#frame2').append(`
+                    <div class="card" data-card=${i}>
+                    <div class="card-back"></div>
+                    <div class="card-front" ></div>
+                    </div>
+                    `)
+                    // 為指定卡片加上贏家標籤 
+                    if (i == rand) { 
+                        $('.card-front').eq(i).addClass('winner')
+                    }
+                }
+                // 加上蠟燭動圖 
+                $('#game').append(`
+                    <img src="./img/mid_game_img/1.gif" alt="candle" id="candle">
+                `)
+            },2500)
+
+            const audio = document.getElementById('audio1')
+            const timer = setInterval(() => {
+                audio.play().then(() => {
+                    clearInterval(timer)
+                }).catch(() => {
+                })
+            }, 100)
+
+            // 設定點擊卡片的程式碼 
+            $('#frame2').on('click', '.card', function () {
+                
+                // 判斷點擊的卡片是否為贏家 
+                // console.log($(this).children( ".card-front" ))
+                // console.log($(this).children( ".card-front").attr("class"))
+
+                // 如果點擊的是贏家卡片 
+                if ($(this).children( ".card-front" ).hasClass('winner')) { 
+                    console.log('winner') 
+                    $('#game').append(`<div id="frame_end" class="clown_dance"></div>`)
+                // 如果點擊的不是贏家卡片 
+                } else { 
+                    // 為卡片加上翻牌動畫 
+                    $(this).find('.card-front').addClass('card-open')
+                    
+                    // 尋找卡片索引值 
+                    // console.log($(this).attr('data-card')) 
+
+                    // 透過卡片索引值計算對應位置 
+                    const posX = $(this).attr('data-card') % 5
+                    const posY = Math.floor($(this).attr('data-card') / 5)
+                    // console.log(posX, posY) 
+
+                    // 計算卡片位置與贏家卡片位置差距值 
+                    const del = Math.sqrt((posX - winX)**2) + Math.sqrt((posY - winY)**2)
+                    console.log(del)
+
+                    // 針對差距值做動畫分級 
+                    if (del >= 5) { 
+                        console.log('you lose') 
+                        $('#frame2').remove()
+                        $('#candle').remove() 
+
+                        $('#game').append(`
+                        <div id="frame_end">
+                            <video controls autoplay muted width="100%" height="100%">
+                                <source src="YOU DIED (HD).mp4">
+                            </video>
+                        </div>       
+                        `)
+                    } else if (del === 4) { 
+                        console.log('gonna lose 3') 
+                        $('#game').append('<div id="frame_end" class="scream"></div>')
+
+                        setTimeout(() => {
+                            $('#frame_end').remove()
+                        }, 1000);
+                    } else if (del === 3) { 
+                        console.log('gonna lose 2') 
+                        $('#game').append('<div id="frame_end" class="clown"></div>')
+
+                        setTimeout(() => {
+                            $('#frame_end').remove()
+                        }, 1000);
+                    } else if (del === 2) { 
+                        console.log('gonna lose 1') 
+                        $('#game').append('<div id="frame_end" class="door"></div>')
+
+                        setTimeout(() => {
+                            $('#frame_end').remove()
+                        }, 1000);
+                    } else if (del <= 0) { 
+                        console.log('you win') 
+                        $('#game').append('<div class="frame_end clown_dance"></div>')
+                    }
+                }
+                
+                // 指定卡片於翻牌一秒後恢復原狀 
+                setTimeout(() => {
+                    $('.card-open').removeClass('card-open')
+                }, 1000);
+            })
+        }) 
+    </script>
+
+</body>
+
+</html>
+
+
+
