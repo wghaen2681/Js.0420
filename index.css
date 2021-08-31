@@ -1,7 +1,6 @@
 body {
+  margin: 0;
   background: black;
-
-  /* 以隱藏多出部分來達成全螢幕的奇怪方式 */
   overflow: hidden;
 }
 
@@ -125,6 +124,10 @@ body {
   transform: translate(-50%, -50%);
 }
 
+.format-pre pre {
+  line-height: 2rem;
+}
+
 .card {
   width: 17%;
   height: 33%;
@@ -164,15 +167,46 @@ body {
 }
 
 #frame_end {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 100;
   width: 100vw;
   height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center 10%;
+}
+
+#frame_end p {
   position: absolute;
-  left: 0px;
-  top: 0px;
-  z-index: 100;
+  left: 50vw;
+  bottom: 10vh;
+  transform: translate(-50%, -50%);
+  font-size: 2.5rem;
+  color: darkred;
+}
+
+#frame_end span {
+  position: absolute;
+  left: 15vw;
+  top: 40vh;
+  border-radius: 7px;
+  padding: 0.7rem 1.5rem;
+  background: orange;
+  font-size: 4rem;
+}
+
+#frame_end button {
+  position: absolute;
+  left: 26.5vw;
+  top: 70vh;
+  font-size: 2rem;
+  transform: translate(-50%, -50%);
+  background: lightblue;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
 }
 
 .door {
@@ -225,6 +259,45 @@ body {
     opacity: 0;
   }
 
+  to {
+    opacity: 1;
+  }
+}
+
+.animation_end {
+  animation-name: animation_end;
+  animation-duration: 2s;
+  /* 
+    ease: 預設值 
+    linear: 維持等速 
+    ease-in: 由慢變快 
+    ease-out; 由快變慢 
+    ease-in-out: 由.慢變快，再由快變慢
+  */
+  animation-timing-function: linear;
+  /* 
+    alternate 交替播放，0 ~ 100% => 100% ~ 0% 
+    alternate-reverse 交替播放，100% ~ 0% => 0% ~ 100% 
+    reverse 反向播放 100% ~ 0%，100% ~ 0% ... 
+  */
+  animation-direction: normal;
+  /* 
+    撥放後的狀態
+    forwards (保留動畫結束後的樣式)
+    backwords (返回動畫一開始的樣式)
+  */
+  animation-fill-mode: forwards;
+}
+
+/* 建立動畫 Animation */
+/* 步驟一，必須要建一組關鍵影格(keyframes) */
+/* 起始 from(0%)、結束 to(100%) */
+@keyframes animation_end {
+  from {
+    /* 不能使用背景的大小作為關鍵影格，要使用 transform 調整整個 div 的大小，或許是因為 animation 比較會抓 div */
+    opacity: 0;
+  }
+  
   to {
     opacity: 1;
   }
